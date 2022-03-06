@@ -64,7 +64,6 @@ const renderCountry = function (data, className = '') {
     </article>
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
 };
 const getCountryAndNeighbour = function (country) {
   // AJAX call country 1
@@ -104,6 +103,11 @@ const getCountryAndNeighbour = function (country) {
 const request = fetch(`https://restcountries.com/v3.1/alpha/usa`);
 // console.log(request);
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v3.1/name/${country}`)
     .then(response => response.json())
@@ -119,6 +123,19 @@ const getCountryData = function (country) {
     .then(data => {
       console.log(data[0]);
       renderCountry(data[0], 'neighbour');
+    })
+    .catch(err => {
+      // alert(err);
+      console.error(`${err}`);
+      renderError(`Something went wrong ${err}`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
     });
 };
-getCountryData('indonesia');
+
+btn.addEventListener('click', function () {
+  getCountryData('indonesia');
+});
+
+// getCountryData('inafa');
