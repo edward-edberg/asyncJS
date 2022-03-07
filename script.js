@@ -64,6 +64,7 @@ const renderCountry = function (data, className = '') {
     </article>
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
 };
 const getCountryAndNeighbour = function (country) {
   // AJAX call country 1
@@ -105,7 +106,7 @@ const request = fetch(`https://restcountries.com/v3.1/alpha/usa`);
 
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
-  // countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
@@ -180,4 +181,37 @@ btn.addEventListener('click', function () {
   getCountryData('indonesia');
 });
 
-getCountryData('indonesia');
+// getCountryData('indonesia');
+
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(res => {
+      // if (!response.ok)
+      //   throw new Error(`Country not found (${response.status})`);
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You're in ${data.city}, ${data.country}`);
+
+      return fetch(`https://restcountries.com/v3.1/name/${data.country}`);
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(`Country not found (${res.status})`);
+      return res.json();
+    })
+
+    .then(data => {
+      // console.log(data[0]);
+      console.log('WOI', data);
+      renderCountry(data[0]);
+    })
+    .catch(err => {
+      console.error(`${err.message}`);
+    });
+};
+
+whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+whereAmI(-33.933, 18.474);
+// console.log(whereAmI());
